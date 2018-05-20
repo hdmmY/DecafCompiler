@@ -9,4 +9,13 @@ public class TokenMatch
     public int EndIdx;
 
     public int Priority;
+
+    public static TokenMatch Empty => new TokenMatch
+    {
+        TokenType = TokenType.None,
+        StartIdx = -1,
+        EndIdx = -1,
+        Value = string.Empty,
+        Priority = -1
+    };
 }

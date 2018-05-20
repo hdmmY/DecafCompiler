@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 public class Tokenizer
@@ -11,74 +12,102 @@ public class Tokenizer
         _tokenDefines = new List<TokenDefinition> ();
 
         // Reserved words
-        _tokenDefines.Add (new TokenDefinition (TokenType.Bool, "bool"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.Break, "break"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.Class, "class"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.Else, "else"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.Extends, "extends"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.For, "for"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.If, "if"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.Int, "int"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.New, "new"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.Null, "null"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.Return, "return"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.String, "string"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.This, "this"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.Void, "void"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.While, "while"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.Static, "static"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.Print, "Print"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.ReadInteger, "ReadInteger"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.ReadLine, "ReadLine"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.Instanceof, "instanceof"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.True, "true"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.False, "false"));
+        _tokenDefines.Add (new TokenDefinition (TokenType.Bool, "bool", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.Break, "break", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.Class, "class", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.Else, "else", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.Extends, "extends", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.For, "for", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.If, "if", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.Int, "int", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.New, "new", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.Null, "null", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.Return, "return", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.String, "string", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.This, "this", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.Void, "void", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.While, "while", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.Static, "static", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.Print, "Print", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.ReadInteger, "ReadInteger", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.ReadLine, "ReadLine", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.Instanceof, "instanceof", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.True, "true", 100));
+        _tokenDefines.Add (new TokenDefinition (TokenType.False, "false", 100));
 
         // Value    
         _tokenDefines.Add (new TokenDefinition (TokenType.IntegerValue,
-            @"[+-]?(((0X|0x)([0-9]|[a-e]|[A-E])+)|(\d+))"));
+            @"[+-]?(((0X|0x)([0-9]|[a-e]|[A-E])+)|(\d+))", 99));
         _tokenDefines.Add (new TokenDefinition (TokenType.DoubleValue,
-            @"[+-]?\d+\.((\d*[+-]?[Ee]\d+)|\d*)"));
+            @"[+-]?\d+\.((\d*[+-]?[Ee]\d+)|\d*)", 99));
         _tokenDefines.Add (new TokenDefinition (TokenType.StringValue,
-            "^\".* \"$"));
+            "^\".* \"$", 99));
 
         // Operators
-        _tokenDefines.Add (new TokenDefinition (TokenType.AddOp, @"\+"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.MinusOp, @"-"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.MutiOp, @"\*"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.DividOp, "/"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.ModOp, "%"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LessOp, "<"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LessEqualOp, "<="));
-        _tokenDefines.Add (new TokenDefinition (TokenType.GreaterOp, ">"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.GreaterEqualOp, ">="));
-        _tokenDefines.Add (new TokenDefinition (TokenType.EqualOp, "=="));
-        _tokenDefines.Add (new TokenDefinition (TokenType.NotEqualOp, "!="));
-        _tokenDefines.Add (new TokenDefinition (TokenType.AndOp, "&&"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.OrOp, "||"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.NorOp, "!"));
+        _tokenDefines.Add (new TokenDefinition (TokenType.AddOp, @"\+", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.MinusOp, @"-", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.MutiOp, @"\*", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.DividOp, "/", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.ModOp, "%", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LessEqualOp, "<=", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.GreaterEqualOp, ">=", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.NotEqualOp, "!=", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.EqualOp, "==", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.AndOp, "&&", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.OrOp, "||", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LessOp, "<", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.GreaterOp, ">", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.NorOp, "!", 97));
 
         // Punctuations
-        _tokenDefines.Add (new TokenDefinition (TokenType.SemicolonPunc, ";"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.CommaPunc, ","));
-        _tokenDefines.Add (new TokenDefinition (TokenType.DotPunc, @"\."));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LeftSquareBracketPunc, "["));
-        _tokenDefines.Add (new TokenDefinition (TokenType.RightSquareBracketPunc, "]"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LeftBracketPunc, "("));
-        _tokenDefines.Add (new TokenDefinition (TokenType.RightBracketPunc, ")"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LeftBracePunc, "{"));
-        _tokenDefines.Add (new TokenDefinition (TokenType.RightBracePunc, "}"));
+        _tokenDefines.Add (new TokenDefinition (TokenType.SemicolonPunc, ";", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.CommaPunc, ",", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.DotPunc, @"\.", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LeftSquareBracketPunc, "[", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.RightSquareBracketPunc, "]", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LeftBracketPunc, "(", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.RightBracketPunc, ")", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LeftBracePunc, "{", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.RightBracePunc, "}", 96));
 
         // Others
-        _tokenDefines.Add (new TokenDefinition (TokenType.Assign, "="));
+        _tokenDefines.Add (new TokenDefinition (TokenType.Assign, "=", 95));
         _tokenDefines.Add (new TokenDefinition (TokenType.Identifier,
-            "^([a-z]|[A-Z])(([a-z]|[A-Z]|[0-9]){0, 30})"));
+            "^([a-z]|[A-Z])(([a-z]|[A-Z]|[0-9]){0, 30})", 95));
 
     }
 
     public IEnumerable<DecafToken> Tokenize (string decafScript)
     {
-        
+        var tokenMatches = FindTokenMatches (decafScript)
+            .GroupBy (x => x.StartIdx)
+            .OrderBy (x => x.Key)
+            .ToList ();
+
+        TokenMatch lastMatch = null;
+
+        for (int i = 0; i < tokenMatches.Count; i++)
+        {
+            TokenMatch bestMatch = tokenMatches[i].OrderBy (x => x.Priority).First ();
+
+            if (lastMatch != null && bestMatch.StartIdx < lastMatch.EndIdx)
+                continue;
+
+            yield return new DecafToken (bestMatch.TokenType, bestMatch.Value);
+
+            lastMatch = bestMatch;
+        }
     }
 
+    private List<TokenMatch> FindTokenMatches (string decafScript)
+    {
+        List<TokenMatch> tokenMatches = new List<TokenMatch> ();
+
+        foreach (var tokenDefine in _tokenDefines)
+        {
+            tokenMatches.AddRange (tokenDefine.FindMatches (decafScript));
+        }
+
+        return tokenMatches;
+    }
 }

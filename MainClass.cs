@@ -2,7 +2,7 @@
 
 namespace DecafCompiler
 {
-    class Main
+    class MainClass
     {
         static void Main(string[] args)
         {

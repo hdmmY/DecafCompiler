@@ -1,5 +1,7 @@
 public enum TokenType
 {
+    None = 0,
+
     //  Reserved word 
     Bool,           // bool 
     Break,          // break
