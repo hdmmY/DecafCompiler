@@ -60,6 +60,11 @@ public enum TokenType
     RightBracePunc,         // }
 
     // Others
-    Assign,         // =
-    Identifier      // identifier
+    Assign,                // =
+    Identifier,            // identifier
+
+    // Commands
+    OnLineCommand,         // //
+    StarCommand,           // /*
+    EndCommand             // */
 }

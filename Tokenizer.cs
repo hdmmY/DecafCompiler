@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,45 +40,50 @@ public class Tokenizer
         _tokenDefines.Add (new TokenDefinition (TokenType.IntegerValue,
             @"[+-]?(((0X|0x)([0-9]|[a-e]|[A-E])+)|(\d+))", 99));
         _tokenDefines.Add (new TokenDefinition (TokenType.DoubleValue,
-            @"[+-]?\d+\.((\d*[+-]?[Ee]\d+)|\d*)", 99));
+            @"[+-]?\d+\.((\d*[Ee][+-]?\d+)|\d*)", 99));
         _tokenDefines.Add (new TokenDefinition (TokenType.StringValue,
-            "^\".* \"$", 99));
+            "\".*\"", 99));
+
+        // Commands
+        _tokenDefines.Add (new TokenDefinition (TokenType.OnLineCommand, @"//", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.StarCommand, @"/\*", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.EndCommand, @"\*/", 98));
 
         // Operators
-        _tokenDefines.Add (new TokenDefinition (TokenType.AddOp, @"\+", 98));
-        _tokenDefines.Add (new TokenDefinition (TokenType.MinusOp, @"-", 98));
-        _tokenDefines.Add (new TokenDefinition (TokenType.MutiOp, @"\*", 98));
-        _tokenDefines.Add (new TokenDefinition (TokenType.DividOp, "/", 98));
-        _tokenDefines.Add (new TokenDefinition (TokenType.ModOp, "%", 98));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LessEqualOp, "<=", 98));
-        _tokenDefines.Add (new TokenDefinition (TokenType.GreaterEqualOp, ">=", 98));
-        _tokenDefines.Add (new TokenDefinition (TokenType.NotEqualOp, "!=", 98));
-        _tokenDefines.Add (new TokenDefinition (TokenType.EqualOp, "==", 98));
-        _tokenDefines.Add (new TokenDefinition (TokenType.AndOp, "&&", 98));
-        _tokenDefines.Add (new TokenDefinition (TokenType.OrOp, "||", 98));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LessOp, "<", 97));
-        _tokenDefines.Add (new TokenDefinition (TokenType.GreaterOp, ">", 97));
-        _tokenDefines.Add (new TokenDefinition (TokenType.NorOp, "!", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.AddOp, @"\+", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.MinusOp, @"-", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.MutiOp, @"\*", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.DividOp, "/", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.ModOp, "%", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LessEqualOp, "<=", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.GreaterEqualOp, ">=", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.NotEqualOp, "!=", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.EqualOp, "==", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.AndOp, "&&", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.OrOp, @"\|\|", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LessOp, "<", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.GreaterOp, ">", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.NorOp, "!", 96));
 
         // Punctuations
-        _tokenDefines.Add (new TokenDefinition (TokenType.SemicolonPunc, ";", 96));
-        _tokenDefines.Add (new TokenDefinition (TokenType.CommaPunc, ",", 96));
-        _tokenDefines.Add (new TokenDefinition (TokenType.DotPunc, @"\.", 96));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LeftSquareBracketPunc, "[", 96));
-        _tokenDefines.Add (new TokenDefinition (TokenType.RightSquareBracketPunc, "]", 96));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LeftBracketPunc, "(", 96));
-        _tokenDefines.Add (new TokenDefinition (TokenType.RightBracketPunc, ")", 96));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LeftBracePunc, "{", 96));
-        _tokenDefines.Add (new TokenDefinition (TokenType.RightBracePunc, "}", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.SemicolonPunc, ";", 95));
+        _tokenDefines.Add (new TokenDefinition (TokenType.CommaPunc, ",", 95));
+        _tokenDefines.Add (new TokenDefinition (TokenType.DotPunc, @"\.", 95));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LeftSquareBracketPunc, @"\[", 95));
+        _tokenDefines.Add (new TokenDefinition (TokenType.RightSquareBracketPunc, @"\]", 95));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LeftBracketPunc, @"\(", 95));
+        _tokenDefines.Add (new TokenDefinition (TokenType.RightBracketPunc, @"\)", 95));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LeftBracePunc, @"\{", 95));
+        _tokenDefines.Add (new TokenDefinition (TokenType.RightBracePunc, @"\}", 95));
 
         // Others
-        _tokenDefines.Add (new TokenDefinition (TokenType.Assign, "=", 95));
+        _tokenDefines.Add (new TokenDefinition (TokenType.Assign, "=", 94));
         _tokenDefines.Add (new TokenDefinition (TokenType.Identifier,
-            "^([a-z]|[A-Z])(([a-z]|[A-Z]|[0-9]){0, 30})", 95));
+            @"([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|_)*", 94));
 
     }
 
-    public IEnumerable<DecafToken> Tokenize (string decafScript)
+    public List<DecafToken> Tokenize (string decafScript)
     {
         var tokenMatches = FindTokenMatches (decafScript)
             .GroupBy (x => x.StartIdx)
@@ -86,17 +92,21 @@ public class Tokenizer
 
         TokenMatch lastMatch = null;
 
+        List<DecafToken> result = new List<DecafToken> ();
+
         for (int i = 0; i < tokenMatches.Count; i++)
         {
-            TokenMatch bestMatch = tokenMatches[i].OrderBy (x => x.Priority).First ();
+            TokenMatch bestMatch = tokenMatches[i].OrderBy (x => x.Priority).Last ();
 
             if (lastMatch != null && bestMatch.StartIdx < lastMatch.EndIdx)
                 continue;
 
-            yield return new DecafToken (bestMatch.TokenType, bestMatch.Value);
+            result.Add (new DecafToken (bestMatch.TokenType, bestMatch.Value));
 
             lastMatch = bestMatch;
         }
+
+        return result;
     }
 
     private List<TokenMatch> FindTokenMatches (string decafScript)
