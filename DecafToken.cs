@@ -4,15 +4,12 @@ public class DecafToken
 
     public string Value;
 
-    public DecafToken (TokenType tokenType)
-    {
-        TokenType = tokenType;
-        Value = string.Empty;
-    }
+    public int LineInfo;
 
-    public DecafToken (TokenType tokenType, string value)
+    public DecafToken (TokenType tokenType, string value, int lineInfo)
     {
         TokenType = tokenType;
         Value = value;
+        LineInfo = lineInfo;
     }
 }

@@ -17,8 +17,8 @@ namespace DecafCompiler
 
             foreach (var decafToken in tokenier.Tokenize (decafScirpt))
             {
-                Console.WriteLine ("token = {0, -30} value = {1}",
-                    decafToken.TokenType.ToString (), decafToken.Value);
+                Console.WriteLine ("line = {0, -5} token = {1, -30} value = {2}",
+                    decafToken.LineInfo, decafToken.TokenType.ToString (), decafToken.Value);
             }
         }
     }

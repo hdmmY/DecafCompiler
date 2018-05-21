@@ -83,6 +83,15 @@ public class Tokenizer
 
     public List<DecafToken> Tokenize (string decafScript)
     {
+        var matchedLines = new Regex (@"\r$", RegexOptions.Multiline)
+            .Matches (decafScript);
+
+        int[] lineInfos = new int[matchedLines.Count];
+        for (int i = 1; i < matchedLines.Count; i++)
+        {
+            lineInfos[i] = matchedLines[i - 1].Index + 1;
+        }
+
         var tokenMatches = FindTokenMatches (decafScript)
             .GroupBy (x => x.StartIdx)
             .OrderBy (x => x.Key)
@@ -99,7 +108,12 @@ public class Tokenizer
             if (lastMatch != null && bestMatch.StartIdx < lastMatch.EndIdx)
                 continue;
 
-            result.Add (new DecafToken (bestMatch.TokenType, bestMatch.Value));
+            if (bestMatch.TokenType != TokenType.OnLineCommand &&
+                bestMatch.TokenType != TokenType.MutiLineCommand)
+            {
+                result.Add (new DecafToken (bestMatch.TokenType, bestMatch.Value,
+                    FindLineInfo (lineInfos, bestMatch.StartIdx)));
+            }
 
             lastMatch = bestMatch;
         }
@@ -117,5 +131,18 @@ public class Tokenizer
         }
 
         return tokenMatches;
+    }
+
+    private int FindLineInfo (int[] lines, int startIdx)
+    {
+        for (int i = 0; i < lines.Length; i++)
+        {
+            if (startIdx < lines[i])
+            {
+                return i;
+            }
+        }
+
+        return lines.Length;
     }
 }
