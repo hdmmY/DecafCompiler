@@ -65,6 +65,5 @@ public enum TokenType
 
     // Commands
     OnLineCommand,         // //
-    StarCommand,           // /*
-    EndCommand             // */
+    MutiLineCommand        // /* */
 }

@@ -12,6 +12,9 @@ public class Tokenizer
     {
         _tokenDefines = new List<TokenDefinition> ();
 
+        _tokenDefines.Add (new TokenDefinition (TokenType.MutiLineCommand, @"/\*(.|\n)*\*/", 102));
+        _tokenDefines.Add (new TokenDefinition (TokenType.OnLineCommand, @"//.*\r?$", 101));
+
         // Reserved words
         _tokenDefines.Add (new TokenDefinition (TokenType.Bool, "bool", 100));
         _tokenDefines.Add (new TokenDefinition (TokenType.Break, "break", 100));
@@ -44,37 +47,32 @@ public class Tokenizer
         _tokenDefines.Add (new TokenDefinition (TokenType.StringValue,
             "\".*\"", 99));
 
-        // Commands
-        _tokenDefines.Add (new TokenDefinition (TokenType.OnLineCommand, @"//", 98));
-        _tokenDefines.Add (new TokenDefinition (TokenType.StarCommand, @"/\*", 98));
-        _tokenDefines.Add (new TokenDefinition (TokenType.EndCommand, @"\*/", 98));
-
         // Operators
-        _tokenDefines.Add (new TokenDefinition (TokenType.AddOp, @"\+", 97));
-        _tokenDefines.Add (new TokenDefinition (TokenType.MinusOp, @"-", 97));
-        _tokenDefines.Add (new TokenDefinition (TokenType.MutiOp, @"\*", 97));
-        _tokenDefines.Add (new TokenDefinition (TokenType.DividOp, "/", 97));
-        _tokenDefines.Add (new TokenDefinition (TokenType.ModOp, "%", 97));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LessEqualOp, "<=", 97));
-        _tokenDefines.Add (new TokenDefinition (TokenType.GreaterEqualOp, ">=", 97));
-        _tokenDefines.Add (new TokenDefinition (TokenType.NotEqualOp, "!=", 97));
-        _tokenDefines.Add (new TokenDefinition (TokenType.EqualOp, "==", 97));
-        _tokenDefines.Add (new TokenDefinition (TokenType.AndOp, "&&", 97));
-        _tokenDefines.Add (new TokenDefinition (TokenType.OrOp, @"\|\|", 97));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LessOp, "<", 96));
-        _tokenDefines.Add (new TokenDefinition (TokenType.GreaterOp, ">", 96));
-        _tokenDefines.Add (new TokenDefinition (TokenType.NorOp, "!", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.AddOp, @"\+", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.MinusOp, @"-", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.MutiOp, @"\*", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.DividOp, "/", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.ModOp, "%", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LessEqualOp, "<=", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.GreaterEqualOp, ">=", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.NotEqualOp, "!=", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.EqualOp, "==", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.AndOp, "&&", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.OrOp, @"\|\|", 98));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LessOp, "<", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.GreaterOp, ">", 97));
+        _tokenDefines.Add (new TokenDefinition (TokenType.NorOp, "!", 97));
 
         // Punctuations
-        _tokenDefines.Add (new TokenDefinition (TokenType.SemicolonPunc, ";", 95));
-        _tokenDefines.Add (new TokenDefinition (TokenType.CommaPunc, ",", 95));
-        _tokenDefines.Add (new TokenDefinition (TokenType.DotPunc, @"\.", 95));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LeftSquareBracketPunc, @"\[", 95));
-        _tokenDefines.Add (new TokenDefinition (TokenType.RightSquareBracketPunc, @"\]", 95));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LeftBracketPunc, @"\(", 95));
-        _tokenDefines.Add (new TokenDefinition (TokenType.RightBracketPunc, @"\)", 95));
-        _tokenDefines.Add (new TokenDefinition (TokenType.LeftBracePunc, @"\{", 95));
-        _tokenDefines.Add (new TokenDefinition (TokenType.RightBracePunc, @"\}", 95));
+        _tokenDefines.Add (new TokenDefinition (TokenType.SemicolonPunc, ";", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.CommaPunc, ",", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.DotPunc, @"\.", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LeftSquareBracketPunc, @"\[", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.RightSquareBracketPunc, @"\]", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LeftBracketPunc, @"\(", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.RightBracketPunc, @"\)", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.LeftBracePunc, @"\{", 96));
+        _tokenDefines.Add (new TokenDefinition (TokenType.RightBracePunc, @"\}", 96));
 
         // Others
         _tokenDefines.Add (new TokenDefinition (TokenType.Assign, "=", 94));

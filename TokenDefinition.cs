@@ -12,7 +12,7 @@ public class TokenDefinition
     {
         _tokenType = tokenType;
         _priority = priority;
-        _regex = new Regex (regexPattern, RegexOptions.None);
+        _regex = new Regex (regexPattern, RegexOptions.Multiline);
     }
 
     public IEnumerable<TokenMatch> FindMatches (string inputString)
